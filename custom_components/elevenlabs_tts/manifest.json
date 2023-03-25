@@ -1,0 +1,14 @@
+{
+  "codeowners": ["@carleeno"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/carleeno/elevenlabs_tts",
+  "domain": "elevenlabs_tts",
+  "iot_class": "cloud_polling",
+  "name": "ElevenLabs TTS",
+  "requirements": [
+    "aiohttp==3.8.4",
+    "mutagen"
+  ],
+  "version": "1.0.0"
+}

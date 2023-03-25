@@ -1,0 +1,30 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API key (optional, but may stop working)"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication",
+            "unknown": "Unknown error"
+        },
+        "abort": {
+            "single_instance_allowed": "Only "
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "voice": "Voice Name",
+                    "stability": "Stability",
+                    "similarity": "Similarity Boost"
+                }
+            }
+        }
+    }
+}
