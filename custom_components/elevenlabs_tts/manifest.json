@@ -1,6 +1,6 @@
 {
   "codeowners": ["@carleeno"],
-  "config_flow": true,
+  "config_flow": false,
   "dependencies": [],
   "documentation": "https://github.com/carleeno/elevenlabs_tts",
   "domain": "elevenlabs_tts",

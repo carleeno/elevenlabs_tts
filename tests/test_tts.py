@@ -125,4 +125,4 @@ def test_elevenlabs_provider_get_tts_audio(
 
         audio = provider.get_tts_audio("Hello", "en")
 
-        assert audio == "mp3", b"fake_audio"
+        assert audio == ("mp3", b"fake_audio")

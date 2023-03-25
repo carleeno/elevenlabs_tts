@@ -5,5 +5,5 @@ CONF_VOICE = "voice"
 DEFAULT_VOICE = "Domi"
 CONF_STABILITY = "stability"
 DEFAULT_STABILITY = 0.75
-CONF_SIMILARITY = "similarity boost"
+CONF_SIMILARITY = "similarity"
 DEFAULT_SIMILARITY = 0.9

@@ -3,7 +3,6 @@ import logging
 from homeassistant import core
 from homeassistant.components.tts import Provider, TtsAudioType
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_API_KEY
 from homeassistant.exceptions import ConfigEntryNotReady
 import requests
 
@@ -19,7 +18,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
     client = ElevenLabsClient(entry.data)
 
     try:
-        client.get_voices()
+        await hass.async_add_executor_job(client.get_voices)
     except requests.exceptions.HTTPError as err:
         if err.response.status_code == 401:
             return False
