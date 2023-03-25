@@ -13,7 +13,7 @@
             "unknown": "Unknown error"
         },
         "abort": {
-            "single_instance_allowed": "Only "
+            "single_instance_allowed": "Only 1 instance of this app is allowed"
         }
     },
     "options": {
@@ -22,7 +22,7 @@
                 "data": {
                     "voice": "Voice Name",
                     "stability": "Stability",
-                    "similarity": "Similarity Boost"
+                    "similarity boost": "Similarity Boost"
                 }
             }
         }

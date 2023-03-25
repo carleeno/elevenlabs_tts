@@ -1,11 +1,11 @@
 import logging
 
-import aiohttp
 from homeassistant import core
 from homeassistant.components.tts import Provider, TtsAudioType
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.exceptions import ConfigEntryNotReady
+import requests
 
 from .const import CONF_SIMILARITY, CONF_STABILITY, CONF_VOICE, DEFAULT_VOICE
 from .elevenlabs import ElevenLabsClient
@@ -19,9 +19,9 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
     client = ElevenLabsClient(entry.data)
 
     try:
-        await client.async_get_voices()
-    except aiohttp.ClientResponseError as err:
-        if err.status == 401:
+        client.get_voices()
+    except requests.exceptions.HTTPError as err:
+        if err.response.status_code == 401:
             return False
         raise ConfigEntryNotReady from err
     except Exception as err:
@@ -69,12 +69,6 @@ class ElevenLabsProvider(Provider):
     ) -> TtsAudioType:
         """Load TTS from the ElevenLabs API."""
         return self._client.get_tts_audio(message, options)
-
-    async def async_get_tts_audio(
-        self, message: str, language: str, options: dict | None = None
-    ) -> TtsAudioType:
-        """Load TTS from the ElevenLabs API."""
-        return await self._client.async_get_tts_audio(message, options)
 
     @property
     def name(self) -> str:

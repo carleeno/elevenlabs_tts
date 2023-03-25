@@ -7,7 +7,7 @@
   "iot_class": "cloud_polling",
   "name": "ElevenLabs TTS",
   "requirements": [
-    "aiohttp==3.8.4",
+    "requests",
     "mutagen"
   ],
   "version": "1.0.0"

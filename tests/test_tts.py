@@ -1,13 +1,12 @@
-from asyncio import Future
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
-import aiohttp
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+import requests
 
 from custom_components.elevenlabs_tts.tts import (
     CONF_SIMILARITY,
@@ -38,8 +37,7 @@ async def test_async_setup_entry(
 ) -> None:
     """Test async_setup_entry function."""
     with patch("custom_components.elevenlabs_tts.tts.ElevenLabsClient") as mock_client:
-        mock_client.return_value.async_get_voices.return_value = Future()
-        mock_client.return_value.async_get_voices.return_value.set_result(None)
+        mock_client.return_value.get_voices.return_value = None
 
         # Call the async_setup_entry function
         result = await async_setup_entry(hass, config_entry)
@@ -55,13 +53,10 @@ async def test_async_setup_entry_with_bad_api_key(
     """Test async_setup_entry function with bad API key."""
     # patch a 401
     with patch(
-        "custom_components.elevenlabs_tts.tts.ElevenLabsClient.async_get_voices",
-        side_effect=aiohttp.ClientResponseError(
-            status=401, request_info=None, history=None
-        ),
+        "custom_components.elevenlabs_tts.tts.ElevenLabsClient.get_voices",
+        side_effect=requests.exceptions.HTTPError(response=Mock(status_code=401)),
     ) as mock_client:
-        mock_client.return_value.async_get_voices.return_value = Future()
-        mock_client.return_value.async_get_voices.return_value.set_result(None)
+        mock_client.return_value.get_voices.return_value = None
 
         # Call the async_setup_entry function
         result = await async_setup_entry(hass, config_entry)
@@ -76,8 +71,7 @@ async def test_async_setup_entry_with_bad_voice(
 ) -> None:
     """Test async_setup_entry function with bad voice."""
     with patch("custom_components.elevenlabs_tts.tts.ElevenLabsClient") as mock_client:
-        mock_client.return_value.async_get_voices.return_value = Future()
-        mock_client.return_value.async_get_voices.return_value.set_result(None)
+        mock_client.return_value.get_voices.return_value = None
         mock_client.return_value.get_voice_by_name.return_value = None
 
         # Call the async_setup_entry function
@@ -93,25 +87,22 @@ async def test_async_setup_entry_with_exception(
 ) -> None:
     """Test async_setup_entry function with exception."""
     with patch(
-        "custom_components.elevenlabs_tts.tts.ElevenLabsClient.async_get_voices",
+        "custom_components.elevenlabs_tts.tts.ElevenLabsClient.get_voices",
         side_effect=Exception,
     ) as mock_client:
-        mock_client.return_value.async_get_voices.return_value = Future()
-        mock_client.return_value.async_get_voices.return_value.set_result(None)
+        mock_client.return_value.get_voices.return_value = None
 
         # ConfigEntryNotReady should be raised
         with pytest.raises(ConfigEntryNotReady):
             await async_setup_entry(hass, config_entry)
 
 
-@pytest.mark.asyncio
-async def test_elevenlabs_provider_init(
+def test_elevenlabs_provider_init(
     hass: HomeAssistant, config_entry: ConfigEntry
 ) -> None:
     """Test ElevenLabsProvider init function."""
     with patch("custom_components.elevenlabs_tts.tts.ElevenLabsClient") as mock_client:
-        mock_client.return_value.async_get_voices.return_value = Future()
-        mock_client.return_value.async_get_voices.return_value.set_result(None)
+        mock_client.return_value.get_voices.return_value = None
 
         provider = get_engine(hass, config_entry)
 
@@ -122,21 +113,16 @@ async def test_elevenlabs_provider_init(
         assert provider._client == mock_client.return_value
 
 
-@pytest.mark.asyncio
-async def test_elevenlabs_provider_get_tts_audio(
+def test_elevenlabs_provider_get_tts_audio(
     hass: HomeAssistant, config_entry: ConfigEntry
 ) -> None:
     """Test ElevenLabsProvider get_tts_audio function."""
     with patch("custom_components.elevenlabs_tts.tts.ElevenLabsClient") as mock_client:
-        mock_client.return_value.async_get_voices.return_value = Future()
-        mock_client.return_value.async_get_voices.return_value.set_result(None)
-        mock_client.return_value.async_get_tts_audio.return_value = Future()
-        mock_client.return_value.async_get_tts_audio.return_value.set_result(
-            b"fake_audio"
-        )
+        mock_client.return_value.get_voices.return_value = None
+        mock_client.return_value.get_tts_audio.return_value = "mp3", b"fake_audio"
 
         provider = get_engine(hass, config_entry)
 
-        audio = await provider.async_get_tts_audio("Hello", "en")
+        audio = provider.get_tts_audio("Hello", "en")
 
-        assert audio == b"fake_audio"
+        assert audio == "mp3", b"fake_audio"

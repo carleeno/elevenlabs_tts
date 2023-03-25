@@ -2,7 +2,6 @@ import logging
 from types import MappingProxyType
 from typing import Any
 
-import aiohttp
 from homeassistant import config_entries
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
@@ -13,6 +12,7 @@ from homeassistant.helpers.selector import (
     SelectSelector,
     SelectSelectorConfig,
 )
+import requests
 import voluptuous as vol
 
 from .const import (
@@ -41,11 +41,11 @@ DEFAULT_OPTIONS = {
 }
 
 
-async def validate_input(hass: HomeAssistant, data: dict) -> dict:
+def validate_input(hass: HomeAssistant, data: dict) -> dict:
     """Validate the user input allows us to connect."""
     _LOGGER.debug("Config data: %s", data)
     client = ElevenLabsClient(data)
-    await client.async_get_voices()
+    client.get_voices()
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -66,9 +66,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         try:
-            await validate_input(self.hass, user_input)
-        except aiohttp.ClientResponseError as err:
-            if err.status == 401:
+            validate_input(self.hass, user_input)
+        except requests.exceptions.HTTPError as err:
+            if err.response.status_code == 401:
                 errors["base"] = "invalid_auth"
             else:
                 _LOGGER.exception("Unexpected response from API")
@@ -110,7 +110,7 @@ class OptionsFlow(config_entries.OptionsFlow):
             self.config_entry.options,
         )
         client = ElevenLabsClient(self.config_entry.options)
-        voices = await client.async_get_voices()
+        voices = client.get_voices()
         voice_names = [voice["name"] for voice in voices]
         _LOGGER.debug("Voice names: %s", voice_names)
         try:
