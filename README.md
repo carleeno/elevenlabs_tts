@@ -1,8 +1,16 @@
 # ElevenLabs TTS for Home Assistant
 
+This integration allows you to use ElevenLabs API as a text-to-speech provider for Home Assistant.
+
+Disclaimer: This repo, the code within, and the maintainer/owner of this repo are in no way affiliated with ElevenLabs.
+
+Privacy disclaimer: Data is transmitted to elevenlabs.io when using this TTS service, do not use it for text containing sensitive information.
+
+You can find ElevenLab's privacy policy [here](https://beta.elevenlabs.io/privacy)
+
 ## Installation
 
-This component is available via HACS as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories) which is the recommended method of installation. 
+This component is available via HACS as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories) which is the recommended method of installation.
 
 You can also copy `custom_components/elevenlabs_tts` to your `custom_components` folder in HomeAssistant if you prefer to install manually.
 
@@ -31,7 +39,7 @@ At the time of writing, it's possible to use this without an API key, but don't 
 
 To get an API key, create an account at elevenlabs.io, and go to Profile Settings to copy it.
 
-Note that using this extension will count against your character quota. As such, *DO NOT* use this TTS service for critical announcements, it will stop working once you've used up your quota.
+Note that using this extension will count against your character quota. As such, **DO NOT** use this TTS service for critical announcements, it will stop working once you've used up your quota.
 
 ## Caching
 
