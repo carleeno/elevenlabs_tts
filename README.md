@@ -33,6 +33,10 @@ To get an API key, create an account at elevenlabs.io, and go to Profile Setting
 
 Note that using this extension will count against your character quota. As such, *DO NOT* use this TTS service for critical announcements, it will stop working once you've used up your quota.
 
+## Caching
+
+This integration inherently uses caching for the responses, meaning that if the text and options are the same as a previous service call, the response audio likely will be a replay of the previous response. The downside is this negates the natural variability that ElevenLabs provides when using the same phrase multiple times. The upside is that it reduces your quota usage and speeds up responses.
+
 ## Example service call
 
 ```yaml
