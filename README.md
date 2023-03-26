@@ -25,13 +25,13 @@ tts:
 - `stability` - (optional, default: 0.75) set the stability of the speech synthesis
 - `similarity` - (optional, default: 0.75) set the clarity/similarity boost of the speech synthesis
 
-## Api key
+## API key
 
 At the time of writing, it's possible to use this without an API key, but don't expect it to work for long.
 
 To get an API key, create an account at elevenlabs.io, and go to Profile Settings to copy it.
 
-Note that using this extension will count against your character quota. As such, *NO NOT* use this TTS service for critical announcements, it will stop working once you've used up your quota.
+Note that using this extension will count against your character quota. As such, *DO NOT* use this TTS service for critical announcements, it will stop working once you've used up your quota.
 
 ## Example service call
 
