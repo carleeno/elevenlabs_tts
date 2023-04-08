@@ -83,14 +83,21 @@ class ElevenLabsClient:
         if not self._voices:
             _LOGGER.debug("No voices found, fetching them now")
             self.get_voices()
-
-        if not self._voices:
-            _LOGGER.error("No voices available, returning empty audio")
-            return b""
+            if not self._voices:
+                _LOGGER.error("No voices available, returning empty audio")
+                return b""
 
         voice_id = self.get_voice_by_name(voice).get("voice_id", None)
         if not voice_id:
-            _LOGGER.warning("Could not find voice with name %s", voice)
-            voice_id = self._voices[0]["voice_id"]
+            _LOGGER.debug("Could not find voice, refreshing voices")
+            self.get_voices()
+            voice_id = self.get_voice_by_name(voice).get("voice_id", None)
+            if not voice_id:
+                _LOGGER.warning(
+                    "Could not find voice with name %s, available voices: %s",
+                    voice,
+                    [voice["name"] for voice in self._voices],
+                )
+                voice_id = self._voices[0]["voice_id"]
 
         return voice_id, stability, similarity
