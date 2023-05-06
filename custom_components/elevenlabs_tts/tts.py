@@ -3,7 +3,13 @@ import logging
 from homeassistant import core
 from homeassistant.components.tts import Provider, TtsAudioType
 
-from .const import CONF_SIMILARITY, CONF_STABILITY, CONF_VOICE
+from .const import (
+    CONF_MODEL,
+    CONF_OPTIMIZE_LATENCY,
+    CONF_SIMILARITY,
+    CONF_STABILITY,
+    CONF_VOICE,
+)
 from .elevenlabs import ElevenLabsClient
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,7 +43,7 @@ class ElevenLabsProvider(Provider):
     @property
     def supported_options(self) -> list[str]:
         """Return list of supported options."""
-        return [CONF_VOICE, CONF_STABILITY, CONF_SIMILARITY]
+        return [CONF_VOICE, CONF_STABILITY, CONF_SIMILARITY, CONF_MODEL, CONF_OPTIMIZE_LATENCY]
 
     def get_tts_audio(
         self, message: str, language: str, options: dict | None = None
