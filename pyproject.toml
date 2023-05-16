@@ -8,10 +8,11 @@ license = "Apache-2.0"
 [tool.poetry.dependencies]
 python = "^3.10"
 requests = "^2.26.0"
+homeassistant = "2023.5.0"
 
 
 [tool.poetry.group.dev.dependencies]
-homeassistant = ">=2022.11.0"
+homeassistant = ">=2023.5.0"
 pytest-homeassistant-custom-component = ">=0.13.1"
 bandit = ">=1.7.0"
 black = {version = ">=21.12b0", allow-prereleases = true}

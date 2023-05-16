@@ -1,3 +1,8 @@
+"""Consts module."""
+from homeassistant.const import Platform
+
+PLATFORMS = [Platform.TTS]
+
 DOMAIN = "elevenlabs_tts"
 VERSION = "1.0.0"
 
