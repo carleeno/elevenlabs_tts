@@ -6,7 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.exceptions import ConfigEntryNotReady
 import requests
 
-from .const import DOMAIN, DEFAULT_VOICE, PLATFORMS
+from .const import DEFAULT_VOICE, DOMAIN, PLATFORMS
 from .elevenlabs import ElevenLabsClient
 
 _LOGGER = logging.getLogger(__name__)

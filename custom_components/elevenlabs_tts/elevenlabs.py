@@ -1,8 +1,8 @@
 import logging
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.httpx_client import get_async_client
 import httpx
 

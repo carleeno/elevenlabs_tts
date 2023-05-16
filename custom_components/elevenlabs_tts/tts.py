@@ -1,8 +1,8 @@
 import logging
 
-from homeassistant.components.tts import TtsAudioType, TextToSpeechEntity
-from homeassistant.const import CONF_API_KEY
+from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
