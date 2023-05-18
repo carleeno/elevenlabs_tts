@@ -81,13 +81,35 @@ class ElevenlabsTTSOptionsFlowHandler(config_entries.OptionsFlow):
             step_id="init",
             data_schema=vol.Schema(
                 {
-                    vol.Optional(CONF_VOICE, default=DEFAULT_VOICE): str,
-                    vol.Optional(CONF_STABILITY, default=DEFAULT_STABILITY): float,
-                    vol.Optional(CONF_SIMILARITY, default=DEFAULT_SIMILARITY): float,
-                    vol.Optional(CONF_MODEL, default=DEFAULT_MODEL): str,
+                    vol.Optional(
+                        CONF_VOICE,
+                        default=self.config_entry.options.get(
+                            CONF_VOICE, DEFAULT_VOICE
+                        ),
+                    ): str,
+                    vol.Optional(
+                        CONF_STABILITY,
+                        default=self.config_entry.options.get(
+                            CONF_STABILITY, DEFAULT_STABILITY
+                        ),
+                    ): float,
+                    vol.Optional(
+                        CONF_SIMILARITY,
+                        default=self.config_entry.options.get(
+                            CONF_SIMILARITY, DEFAULT_SIMILARITY
+                        ),
+                    ): float,
+                    vol.Optional(
+                        CONF_MODEL,
+                        default=self.config_entry.options.get(
+                            CONF_MODEL, DEFAULT_MODEL
+                        ),
+                    ): str,
                     vol.Optional(
                         CONF_OPTIMIZE_LATENCY,
-                        default=DEFAULT_OPTIMIZE_LATENCY,
+                        default=self.config_entry.options.get(
+                            CONF_OPTIMIZE_LATENCY, DEFAULT_OPTIMIZE_LATENCY
+                        ),
                     ): int,
                 }
             ),
