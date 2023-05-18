@@ -1,0 +1,16 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+logger:
+  default: info
+  logs:
+    homeassistant.setup: debug
+    homeassistant.components.auth: debug
+    homeassistant.components.http: debug
+    custom_components.elevenlabs_tts: debug
+# If you need to debug uncomment the line below (doc: https://www.home-assistant.io/integrations/debugpy/)
+debugpy:
+  start: True
+  # wait: True
+

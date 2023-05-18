@@ -1,8 +1,8 @@
 """ElevenLabs TTS Custom Integration"""
 import logging
 
-from homeassistant import core
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 import requests
 
@@ -12,7 +12,7 @@ from .elevenlabs import ElevenLabsClient
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the ElevenLabs TTS component from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
@@ -39,3 +39,15 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
     )
 
     return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload Wyoming."""
+    unload_ok = await hass.config_entries.async_unload_platforms(
+        entry,
+        PLATFORMS,
+    )
+    if unload_ok:
+        del hass.data[DOMAIN][entry.entry_id]
+
+    return unload_ok

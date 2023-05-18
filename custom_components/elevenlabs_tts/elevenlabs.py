@@ -5,6 +5,7 @@ from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.httpx_client import get_async_client
 import httpx
+import orjson
 
 from .const import (
     CONF_MODEL,
@@ -17,7 +18,6 @@ from .const import (
     DEFAULT_SIMILARITY,
     DEFAULT_STABILITY,
     DEFAULT_VOICE,
-    DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -72,14 +72,17 @@ class ElevenLabsClient:
         """Make a POST request to the API."""
         url = f"{self.base_url}/{endpoint}"
         headers = self._headers.copy()
+        headers["accept"] = "audio/mpeg"
         if api_key:
             headers["xi-api-key"] = api_key
         else:
             headers["xi-api-key"] = self._api_key
 
+        json_str = orjson.dumps(data)
+
         try:
             response = await self.session.post(
-                url, headers=headers, json=data, params=params
+                url, headers=headers, data=json_str, params=params
             )
             response.raise_for_status()
             return response
@@ -140,19 +143,28 @@ class ElevenLabsClient:
             options = {}
 
         # Get the voice from options, or fall back to the configured default voice
-        voice = options.get(CONF_VOICE, self.config_entry.options[CONF_VOICE])
+        voice = options.get(
+            CONF_VOICE, self.config_entry.options.get(CONF_VOICE, DEFAULT_VOICE)
+        )
 
         # Get the stability, similarity, model, and optimize latency from options,
         # or fall back to the configured default values
         stability = options.get(
-            CONF_STABILITY, self.config_entry.options[CONF_STABILITY]
+            CONF_STABILITY,
+            self.config_entry.options.get(CONF_STABILITY, DEFAULT_STABILITY),
         )
         similarity = options.get(
-            CONF_SIMILARITY, self.config_entry.options[CONF_SIMILARITY]
+            CONF_SIMILARITY,
+            self.config_entry.options.get(CONF_SIMILARITY, DEFAULT_SIMILARITY),
         )
-        model = options.get(CONF_MODEL, self.config_entry.options[CONF_MODEL])
+        model = options.get(
+            CONF_MODEL, self.config_entry.options.get(CONF_MODEL, DEFAULT_MODEL)
+        )
         optimize_latency = options.get(
-            CONF_OPTIMIZE_LATENCY, self.config_entry.options[CONF_OPTIMIZE_LATENCY]
+            CONF_OPTIMIZE_LATENCY,
+            self.config_entry.options.get(
+                CONF_OPTIMIZE_LATENCY, DEFAULT_OPTIMIZE_LATENCY
+            ),
         )
 
         api_key = options.get(CONF_API_KEY)
@@ -171,7 +183,8 @@ class ElevenLabsClient:
             voice = await self.get_voice_by_name(voice)
             voice_id = voice.get("voice_id", None)
 
-            # If voice_id is still not found, log a warning and use the first available voice
+            # If voice_id is still not found, log a warning
+            #  and use the first available voice
             if not voice_id:
                 _LOGGER.warning(
                     "Could not find voice with name %s, available voices: %s",

@@ -43,7 +43,7 @@ async def test_async_setup_entry(
         result = await async_setup_entry(hass, config_entry)
 
         # Verify that the function returns the expected value
-        assert result == True
+        assert result is True
 
 
 @pytest.mark.asyncio
@@ -62,7 +62,7 @@ async def test_async_setup_entry_with_bad_api_key(
         result = await async_setup_entry(hass, config_entry)
 
         # Verify that the function returns the expected value
-        assert result == False
+        assert result is False
 
 
 @pytest.mark.asyncio
@@ -78,7 +78,7 @@ async def test_async_setup_entry_with_bad_voice(
         result = await async_setup_entry(hass, config_entry)
 
         # Verify that the function returns the expected value
-        assert result == False
+        assert result is False
 
 
 @pytest.mark.asyncio

@@ -1,5 +1,5 @@
+-r requirements.txt
 pytest
 pytest-cov
 pytest-homeassistant-custom-component
-requests
-mutagen
+pre-commit>=2.11.1

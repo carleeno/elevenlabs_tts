@@ -57,7 +57,8 @@ class ElevenlabsTTSSetupFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def _validate_api_key(self, api_key):
         """Perform API key validation."""
-        # Implement your validation logic here, e.g., make an API call to validate the key
+        # Implement your validation logic here, e.g., make an API
+        # call to validate the key
         # Return True if the key is valid, otherwise False
         client = ElevenLabsClient(self.hass, api_key=api_key)
         await client.get_voices()
