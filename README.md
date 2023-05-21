@@ -14,32 +14,23 @@ This component is available via HACS as a [custom repository](https://hacs.xyz/d
 
 You can also copy `custom_components/elevenlabs_tts` to your `custom_components` folder in HomeAssistant if you prefer to install manually.
 
-## Example `tts` entry in your `configuration.yaml`
+## Setup
 
-```yaml
-tts:
-  - platform: elevenlabs_tts
-    api_key: !secret elevenlabs_api_key
-    voice: Domi
-    stability: 0.75
-    similarity: 0.75
-    model: eleven_multilingual_v1
-    optimize_streaming_latency: 1
-```
+Go to Settings -> Devices & Services -> ADD INTEGRATION, and select ElevenLabs TTS
+
+Enter your api key from your ElevenLabs account and click Submit.
 
 ### Options:
 
-- `platform` - specifies to use this component, must be `elevenlabs_tts`
-- `api_key` - (optional) get access to your own account's voices
-- `voice` - (optional, default: Domi) use a different voice
-- `stability` - (optional, default: 0.75) set the stability of the speech synthesis
-- `similarity` - (optional, default: 0.75) set the clarity/similarity boost of the speech synthesis
-- `model` - (optional, default: eleven_multilingual_v1) change the model used for requests
-- `optimize_streaming_latency` - (optional, default: 0) reduce latency at the cost of quality
+To customize the default options, in Devices & Services, click CONFIGURE on the ElevenLabs TTS card.
+
+- `Voice` - Enter the name of one of the voices available in your account
+- `Stability` - Sets the stability of the speech synthesis
+- `Similarity` - Sets the clarity/similarity boost of the speech synthesis
+- `Model` - Determines which model is used to generate speech
+- `Optimize Streaming Latency` - Reduce latency at the cost of quality
 
 ## API key
-
-At the time of writing, it's possible to use this without an API key, but don't expect it to work for long.
 
 To get an API key, create an account at elevenlabs.io, and go to Profile Settings to copy it.
 
@@ -52,16 +43,19 @@ This integration inherently uses caching for the responses, meaning that if the 
 ## Example service call
 
 ```yaml
-service: tts.elevenlabs_tts_say
+service: tts.speak
 data:
+  cache: true
+  media_player_entity_id: media_player.bedroom_speaker
+  message: Hello, how are you today?
   options:
     voice: Bella
     stability: 1
     similarity: 1
     model: eleven_multilingual_v1
     optimize_streaming_latency: 3
-  entity_id: media_player.chromecast9105
-  message: Hello there, how are you today?
+target:
+  entity_id: tts.elevenlabstts
 ```
 
-The parameters in `options` are fully optional, this allows you to override what's defined in `configuration.yaml`.
+The parameters in `options` are fully optional, and override the defaults specified in the integration config.
