@@ -34,7 +34,7 @@ tts:
 - `voice` - (optional, default: Domi) use a different voice
 - `stability` - (optional, default: 0.75) set the stability of the speech synthesis
 - `similarity` - (optional, default: 0.75) set the clarity/similarity boost of the speech synthesis
-- `model` - (optional, default: eleven_monolingual_v1) change the model used for requests
+- `model` - (optional, default: eleven_multilingual_v1) change the model used for requests
 - `optimize_streaming_latency` - (optional, default: 0) reduce latency at the cost of quality
 
 ## API key
