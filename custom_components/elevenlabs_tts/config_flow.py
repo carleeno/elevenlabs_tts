@@ -2,6 +2,7 @@ from homeassistant import config_entries, exceptions
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from httpx import HTTPStatusError
 import voluptuous as vol
 
 from .const import (
@@ -33,8 +34,9 @@ class ElevenlabsTTSSetupFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             # Validate the provided API key
-            if not await self._validate_api_key(user_input[CONF_API_KEY]):
-                errors[CONF_API_KEY] = "invalid_api_key"
+            resp = await self._validate_api_key(user_input[CONF_API_KEY])
+            if resp is not None:
+                errors[CONF_API_KEY] = resp
 
             if not errors:
                 return self.async_create_entry(title="Eleven Labs TTS", data=user_input)
@@ -55,14 +57,23 @@ class ElevenlabsTTSSetupFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Get the options flow for this handler."""
         return ElevenlabsTTSOptionsFlowHandler(config_entry)
 
-    async def _validate_api_key(self, api_key):
+    async def _validate_api_key(self, api_key) -> list[str]:
         """Perform API key validation."""
         # Implement your validation logic here, e.g., make an API
         # call to validate the key
-        # Return True if the key is valid, otherwise False
+        # Return None if the key is valid, otherwise Error
         client = ElevenLabsClient(self.hass, api_key=api_key)
-        await client.get_voices()
-        return True
+        try:
+            await client.get_voices()
+        except HTTPStatusError as http_error:
+            if 500 <= http_error.response.status_code < 600:
+                return "Server Error"
+            elif 400 <= http_error.response.status_code < 500:
+                err_json = http_error.response.json()
+                return err_json["detail"]["status"]
+            else:
+                return str(http_error.response.content)
+        return None
 
 
 class ElevenlabsTTSOptionsFlowHandler(config_entries.OptionsFlow):

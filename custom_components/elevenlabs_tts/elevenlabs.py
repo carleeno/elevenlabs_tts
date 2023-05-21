@@ -58,13 +58,9 @@ class ElevenLabsClient:
         else:
             headers["xi-api-key"] = self._api_key
 
-        try:
-            response = await self.session.get(url, headers=headers)
-            response.raise_for_status()
-            return response.json()
-        except httpx.HTTPError as e:
-            _LOGGER.error("Error during GET request: %s", str(e))
-            return {}
+        response = await self.session.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
 
     async def post(
         self, endpoint: str, data: dict, params: dict, api_key: str = None
@@ -80,15 +76,11 @@ class ElevenLabsClient:
 
         json_str = orjson.dumps(data)
 
-        try:
-            response = await self.session.post(
-                url, headers=headers, data=json_str, params=params
-            )
-            response.raise_for_status()
-            return response
-        except httpx.HTTPError as e:
-            _LOGGER.error("Error during POST request: %s", str(e))
-            return {}
+        response = await self.session.post(
+            url, headers=headers, data=json_str, params=params
+        )
+        response.raise_for_status()
+        return response
 
     async def get_voices(self) -> dict:
         """Get voices from the API."""
