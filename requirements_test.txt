@@ -4,3 +4,6 @@ pytest-cov
 pytest-homeassistant-custom-component==0.13.31
 pre-commit>=2.11.1
 respx
+
+# needed for home assistant testing
+mutagen
