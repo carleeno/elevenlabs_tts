@@ -1,5 +1,8 @@
 {
   "name": "ElevenLabs TTS",
+  "filename": "elevenlabs_tts.zip",
+  "hide_default_branch": true,
+  "homeassistant": "2023.5.3",
   "render_readme": true,
-  "iot_class": "cloud_polling"
+  "zip_release": true
 }

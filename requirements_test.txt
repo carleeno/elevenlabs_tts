@@ -1,0 +1,14 @@
+-r requirements.txt
+pytest
+pytest-cov
+pytest-homeassistant-custom-component==0.13.31
+pre-commit>=2.11.1
+respx
+
+# needed for home assistant testing
+mutagen
+aiogithubapi>=21.11.0
+aiohttp>=3.8.3,<4.0
+aiohttp_cors==0.7.0
+asynctest==0.13.0
+colorlog==6.7.0

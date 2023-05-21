@@ -1,0 +1,35 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Account is already configured",
+            "reauth_successful": "Re-authentication was successful"
+        },
+        "error": {
+            "already_configured": "Account is already configured",
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API Key"
+                },
+                "description": "Get your API key from the Eleven Labs website",
+                "title": "Eleven Labs - Configuration"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "voice": "Name of voice to use",
+                    "stability": "Set the stability of the speech synthesis",
+                    "similarity": "Set the clarity/similarity boost of the speech synthesis",
+                    "model": "Change the model used for requests",
+                    "optimize_streaming_latency": "Reduce latency at the cost of quality"
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,11 @@
 import logging
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
-import requests
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.httpx_client import get_async_client
+import httpx
+import orjson
 
 from .const import (
     CONF_MODEL,
@@ -22,31 +26,70 @@ _LOGGER = logging.getLogger(__name__)
 class ElevenLabsClient:
     """A class to handle the connection to the ElevenLabs API."""
 
-    def __init__(self, config: dict) -> None:
+    def __init__(
+        self, hass: HomeAssistant, config_entry: ConfigEntry = None, api_key=None
+    ) -> None:
         """Initialize the client."""
         _LOGGER.debug("Initializing ElevenLabs client")
-        self._11l_url = "https://api.elevenlabs.io/v1"
+
+        if api_key is None and config_entry is None:
+            raise ValueError("Either 'api_key' or 'config_entry' must be provided.")
+
+        self.config_entry = config_entry
+        if api_key is not None:
+            self._api_key = api_key
+        else:
+            self._api_key = config_entry.data[CONF_API_KEY]
+
+        self.session: httpx.AsyncClient = get_async_client(hass)
+
+        self.base_url = "https://api.elevenlabs.io/v1"
         self._headers = {"Content-Type": "application/json"}
-        if config.get(CONF_API_KEY):
-            self._headers["xi-api-key"] = config[CONF_API_KEY]
 
         # [{"voice_id": str, "name": str, ...}]
         self._voices: list[dict] = []
-        self.config = config
 
-    def get_voices(self) -> list:
-        self._voices = []
-        url = f"{self._11l_url}/voices"
-        _LOGGER.debug("Fetching voices from %s", url)
-        response = requests.get(url, headers=self._headers)
-        _LOGGER.debug("Response status: %s", response.status_code)
-        if not response.ok:
-            raise requests.exceptions.HTTPError(response=response)
-        self._voices = (response.json())["voices"]
-        _LOGGER.debug("Found %s voices", len(self._voices))
+    async def get(self, endpoint: str, api_key=None) -> dict:
+        """Make a GET request to the API."""
+        url = f"{self.base_url}/{endpoint}"
+        headers = self._headers.copy()
+        if api_key:
+            headers["xi-api-key"] = api_key
+        else:
+            headers["xi-api-key"] = self._api_key
+
+        response = await self.session.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
+
+    async def post(
+        self, endpoint: str, data: dict, params: dict, api_key: str = None
+    ) -> dict:
+        """Make a POST request to the API."""
+        url = f"{self.base_url}/{endpoint}"
+        headers = self._headers.copy()
+        headers["accept"] = "audio/mpeg"
+        if api_key:
+            headers["xi-api-key"] = api_key
+        else:
+            headers["xi-api-key"] = self._api_key
+
+        json_str = orjson.dumps(data)
+
+        response = await self.session.post(
+            url, headers=headers, data=json_str, params=params
+        )
+        response.raise_for_status()
+        return response
+
+    async def get_voices(self) -> dict:
+        """Get voices from the API."""
+        endpoint = "voices"
+        voices = await self.get(endpoint)
+        self._voices = voices.get("voices", [])
         return self._voices
 
-    def get_voice_by_name(self, name: str) -> dict:
+    async def get_voice_by_name(self, name: str) -> dict:
         """Get a voice by its name."""
         _LOGGER.debug("Looking for voice with name %s", name)
         for voice in self._voices:
@@ -56,56 +99,84 @@ class ElevenLabsClient:
         _LOGGER.warning("Could not find voice with name %s", name)
         return {}
 
-    def get_tts_audio(self, message: str, options: dict | None = None) -> bytes:
-        voice_id, stability, similarity, model, optimize_latency = self.get_tts_options(
-            options
-        )
-        url = f"{self._11l_url}/text-to-speech/{voice_id}"
+    async def get_tts_audio(
+        self, message: str, options: dict | None = None
+    ) -> tuple[str, bytes]:
+        """Get text-to-speech audio for the given message."""
+        (
+            voice_id,
+            stability,
+            similarity,
+            model,
+            optimize_latency,
+            api_key,
+        ) = await self.get_tts_options(options)
+
+        endpoint = f"text-to-speech/{voice_id}"
         data = {
             "text": message,
             "model_id": model,
             "voice_settings": {"stability": stability, "similarity_boost": similarity},
         }
         params = {"optimize_streaming_latency": optimize_latency}
-
-        _LOGGER.debug("Requesting TTS from %s", url)
+        _LOGGER.debug("Requesting TTS from %s", endpoint)
         _LOGGER.debug("Request data: %s", data)
         _LOGGER.debug("Request params: %s", params)
 
-        response = requests.post(url, headers=self._headers, json=data, params=params)
-        _LOGGER.debug("Response status: %s", response.status_code)
-        if not response.ok:
-            raise requests.exceptions.HTTPError(response=response)
-        return "mp3", response.content
+        resp = await self.post(endpoint, data, params, api_key=api_key)
+        return "mp3", resp.content
 
-    def get_tts_options(self, options: dict) -> tuple[str, float, float, str, int]:
+    async def get_tts_options(
+        self, options: dict
+    ) -> tuple[str, float, float, str, int, str]:
+        """Get the text-to-speech options for generating TTS audio."""
+        # If options is None, assign an empty dictionary to options
         if not options:
             options = {}
-        voice = options.get(CONF_VOICE, self.config.get(CONF_VOICE, DEFAULT_VOICE))
+
+        # Get the voice from options, or fall back to the configured default voice
+        voice = options.get(
+            CONF_VOICE, self.config_entry.options.get(CONF_VOICE, DEFAULT_VOICE)
+        )
+
+        # Get the stability, similarity, model, and optimize latency from options,
+        # or fall back to the configured default values
         stability = options.get(
-            CONF_STABILITY, self.config.get(CONF_STABILITY, DEFAULT_STABILITY)
+            CONF_STABILITY,
+            self.config_entry.options.get(CONF_STABILITY, DEFAULT_STABILITY),
         )
         similarity = options.get(
-            CONF_SIMILARITY, self.config.get(CONF_SIMILARITY, DEFAULT_SIMILARITY)
+            CONF_SIMILARITY,
+            self.config_entry.options.get(CONF_SIMILARITY, DEFAULT_SIMILARITY),
         )
-        model = options.get(CONF_MODEL, self.config.get(CONF_MODEL, DEFAULT_MODEL))
+        model = options.get(
+            CONF_MODEL, self.config_entry.options.get(CONF_MODEL, DEFAULT_MODEL)
+        )
         optimize_latency = options.get(
             CONF_OPTIMIZE_LATENCY,
-            self.config.get(CONF_OPTIMIZE_LATENCY, DEFAULT_OPTIMIZE_LATENCY),
+            self.config_entry.options.get(
+                CONF_OPTIMIZE_LATENCY, DEFAULT_OPTIMIZE_LATENCY
+            ),
         )
+
+        api_key = options.get(CONF_API_KEY)
+
+        # Convert optimize_latency to an integer
         optimize_latency = int(optimize_latency)
 
-        if not self._voices:
-            _LOGGER.debug("No voices found, fetching them now")
-            self.get_voices()
-            if not self._voices:
-                raise ValueError("No voices available")
+        # Get the voice ID by name from the TTS service
+        voice = await self.get_voice_by_name(voice)
+        voice_id = voice.get("voice_id", None)
 
-        voice_id = self.get_voice_by_name(voice).get("voice_id", None)
+        # If voice_id is not found, refresh the list of voices and try again
         if not voice_id:
             _LOGGER.debug("Could not find voice, refreshing voices")
-            self.get_voices()
-            voice_id = self.get_voice_by_name(voice).get("voice_id", None)
+            await self.get_voices()
+            voice = await self.get_voice_by_name(voice)
+            voice_id = voice.get("voice_id", None)
+
+            # If voice_id is still not found, log a warning
+            #  and use the first available voice
             if not voice_id:
                 _LOGGER.warning(
                     "Could not find voice with name %s, available voices: %s",
@@ -114,4 +185,4 @@ class ElevenLabsClient:
                 )
                 voice_id = self._voices[0]["voice_id"]
 
-        return voice_id, stability, similarity, model, optimize_latency
+        return voice_id, stability, similarity, model, optimize_latency, api_key

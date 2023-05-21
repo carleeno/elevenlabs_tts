@@ -1,3 +1,14 @@
+"""Consts module."""
+from homeassistant.const import Platform
+
+################################
+# Do not change! Will be set by release workflow
+INTEGRATION_VERSION = "main"  # git tag will be used
+MIN_REQUIRED_HA_VERSION = "0.0.0"  # set min required version in hacs.json
+################################
+
+PLATFORMS = [Platform.TTS]
+
 DOMAIN = "elevenlabs_tts"
 VERSION = "1.0.0"
 

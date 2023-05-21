@@ -1,13 +1,17 @@
-venv
-
-.coverage
-
-.pytest_cache
-
+# artifacts
 __pycache__
+.pytest*
+*.egg-info
+*/build/*
+*/dist/*
 
-.devcontainer
 
+# misc
+.coverage
 .vscode
+coverage.xml
 
-*.lock
+
+# Home Assistant configuration
+config/*
+!config/configuration.yaml

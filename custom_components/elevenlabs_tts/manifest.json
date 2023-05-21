@@ -1,14 +1,16 @@
 {
-  "codeowners": ["@carleeno"],
-  "config_flow": false,
-  "dependencies": [],
-  "documentation": "https://github.com/carleeno/elevenlabs_tts",
   "domain": "elevenlabs_tts",
-  "iot_class": "cloud_polling",
   "name": "ElevenLabs TTS",
-  "requirements": [
-    "requests",
-    "mutagen"
+  "codeowners": [
+    "@carleeno"
   ],
-  "version": "1.0.0"
+  "config_flow": true,
+  "dependencies": [
+    "http"
+  ],
+  "documentation": "https://github.com/carleeno/elevenlabs_tts",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/carleeno/elevenlabs_tts/issues",
+  "requirements": [],
+  "version": "0.0.0"
 }
