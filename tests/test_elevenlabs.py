@@ -207,7 +207,7 @@ async def test_get_voices(client):
 
 
 @pytest.mark.asyncio
-async def test_get_voice_by_name(client):
+async def test_get_voice_by_name_or_id(client):
     # Set up mock data and voice name
     voices = [
         {"voice_id": "1", "name": "Voice1"},
@@ -218,7 +218,7 @@ async def test_get_voice_by_name(client):
     voice_name = "Voice2"
 
     # Call the method being tested
-    voice = await client.get_voice_by_name(voice_name)
+    voice = await client.get_voice_by_name_or_id(voice_name)
 
     # Assert that the returned voice matches the expected voice
     assert voice == {"voice_id": "2", "name": "Voice2"}
@@ -236,7 +236,7 @@ async def test_get_voice_by_name_not_found(client):
     voice_name = "Voice4"  # Voice name not present in the mocked voices
 
     # Call the method being tested
-    voice = await client.get_voice_by_name(voice_name)
+    voice = await client.get_voice_by_name_or_id(voice_name)
 
     # Assert that the returned voice is an empty dictionary
     assert voice == {}

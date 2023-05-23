@@ -97,14 +97,16 @@ class ElevenLabsClient:
 
         return self._voices
 
-    async def get_voice_by_name(self, name: str) -> dict:
-        """Get a voice by its name."""
-        _LOGGER.debug("Looking for voice with name %s", name)
+    async def get_voice_by_name_or_id(self, identifier: str) -> dict:
+        """Get a voice by its name or ID."""
+        _LOGGER.debug("Looking for voice with identifier %s", identifier)
         for voice in self._voices:
-            if voice["name"] == name:
-                _LOGGER.debug("Found voice %s from name %s", voice["voice_id"], name)
+            if voice["name"] == identifier or voice["voice_id"] == identifier:
+                _LOGGER.debug(
+                    "Found voice %s from identifier %s", voice["voice_id"], identifier
+                )
                 return voice
-        _LOGGER.warning("Could not find voice with name %s", name)
+        _LOGGER.warning("Could not find voice with identifier %s", identifier)
         return {}
 
     async def get_tts_audio(
@@ -143,7 +145,7 @@ class ElevenLabsClient:
             options = {}
 
         # Get the voice from options, or fall back to the configured default voice
-        voice = options.get(
+        voice_opt = options.get(
             CONF_VOICE, self.config_entry.options.get(CONF_VOICE, DEFAULT_VOICE)
         )
 
@@ -173,14 +175,15 @@ class ElevenLabsClient:
         optimize_latency = int(optimize_latency)
 
         # Get the voice ID by name from the TTS service
-        voice = await self.get_voice_by_name(voice)
+
+        voice = await self.get_voice_by_name_or_id(voice_opt)
         voice_id = voice.get("voice_id", None)
 
         # If voice_id is not found, refresh the list of voices and try again
         if not voice_id:
             _LOGGER.debug("Could not find voice, refreshing voices")
             await self.get_voices()
-            voice = await self.get_voice_by_name(voice)
+            voice = await self.get_voice_by_name_or_id(voice_opt)
             voice_id = voice.get("voice_id", None)
 
             # If voice_id is still not found, log a warning
