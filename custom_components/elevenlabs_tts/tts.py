@@ -45,7 +45,9 @@ class ElevenLabsProvider(TextToSpeechEntity):
         """Initialize the provider."""
         self._client = client
         self._config_entry = config_entry
-        self._name = "ElevenLabsTTS"
+        self._name = "ElevenLabs TTS"
+
+        self._attr_unique_id = f"{config_entry.entry_id}-tts"
 
     @property
     def default_language(self) -> str:
