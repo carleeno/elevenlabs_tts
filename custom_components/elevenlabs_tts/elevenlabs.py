@@ -1,6 +1,6 @@
 import logging
 
-from homeassistant.components.tts.models import Voice
+from homeassistant.components.tts import ATTR_AUDIO_OUTPUT, Voice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
@@ -143,6 +143,9 @@ class ElevenLabsClient:
         # If options is None, assign an empty dictionary to options
         if not options:
             options = {}
+
+        if options.get(ATTR_AUDIO_OUTPUT, "mp3") != "mp3":
+            raise ValueError("Only MP3 output is supported.")
 
         # Get the voice from options, or fall back to the configured default voice
         voice_opt = options.get(

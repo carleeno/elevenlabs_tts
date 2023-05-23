@@ -1,7 +1,11 @@
 import logging
 
-from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType
-from homeassistant.components.tts.models import Voice
+from homeassistant.components.tts import (
+    ATTR_AUDIO_OUTPUT,
+    TextToSpeechEntity,
+    TtsAudioType,
+    Voice,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
@@ -51,7 +55,12 @@ class ElevenLabsProvider(TextToSpeechEntity):
     @property
     def supported_languages(self) -> list[str]:
         """Return list of supported languages."""
-        return ["en", "de", "pl", "es", "it", "fr", "pt", "hi"]
+        return ["en"]
+
+    @property
+    def default_options(self):
+        """Return a dict include default options."""
+        return {ATTR_AUDIO_OUTPUT: "mp3"}
 
     @property
     def supported_options(self) -> list[str]:
@@ -63,6 +72,7 @@ class ElevenLabsProvider(TextToSpeechEntity):
             CONF_MODEL,
             CONF_OPTIMIZE_LATENCY,
             CONF_API_KEY,
+            ATTR_AUDIO_OUTPUT,
         ]
 
     async def async_get_tts_audio(
