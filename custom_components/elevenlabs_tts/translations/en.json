@@ -23,6 +23,7 @@
         "step": {
             "init": {
                 "data": {
+                    "api_key": "API Key",
                     "voice": "Name of voice to use",
                     "stability": "Set the stability of the speech synthesis",
                     "similarity": "Set the clarity/similarity boost of the speech synthesis",

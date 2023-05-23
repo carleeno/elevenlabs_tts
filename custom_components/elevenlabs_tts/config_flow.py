@@ -93,6 +93,10 @@ class ElevenlabsTTSOptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema(
                 {
                     vol.Optional(
+                        CONF_API_KEY,
+                        default=self.config_entry.data.get(CONF_API_KEY),
+                    ): str,
+                    vol.Optional(
                         CONF_VOICE,
                         default=self.config_entry.options.get(
                             CONF_VOICE, DEFAULT_VOICE

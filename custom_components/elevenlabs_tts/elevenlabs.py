@@ -148,31 +148,43 @@ class ElevenLabsClient:
             raise ValueError("Only MP3 output is supported.")
 
         # Get the voice from options, or fall back to the configured default voice
-        voice_opt = options.get(
-            CONF_VOICE, self.config_entry.options.get(CONF_VOICE, DEFAULT_VOICE)
+        voice_opt = (
+            options.get(CONF_VOICE)
+            or self.config_entry.options.get(CONF_VOICE)
+            or DEFAULT_VOICE
         )
 
         # Get the stability, similarity, model, and optimize latency from options,
         # or fall back to the configured default values
-        stability = options.get(
-            CONF_STABILITY,
-            self.config_entry.options.get(CONF_STABILITY, DEFAULT_STABILITY),
-        )
-        similarity = options.get(
-            CONF_SIMILARITY,
-            self.config_entry.options.get(CONF_SIMILARITY, DEFAULT_SIMILARITY),
-        )
-        model = options.get(
-            CONF_MODEL, self.config_entry.options.get(CONF_MODEL, DEFAULT_MODEL)
-        )
-        optimize_latency = options.get(
-            CONF_OPTIMIZE_LATENCY,
-            self.config_entry.options.get(
-                CONF_OPTIMIZE_LATENCY, DEFAULT_OPTIMIZE_LATENCY
-            ),
+        stability = (
+            options.get(CONF_STABILITY)
+            or self.config_entry.options.get(CONF_STABILITY)
+            or DEFAULT_STABILITY
         )
 
-        api_key = options.get(CONF_API_KEY)
+        similarity = (
+            options.get(CONF_SIMILARITY)
+            or self.config_entry.options.get(CONF_SIMILARITY)
+            or DEFAULT_SIMILARITY
+        )
+
+        model = (
+            options.get(CONF_MODEL)
+            or self.config_entry.options.get(CONF_MODEL)
+            or DEFAULT_MODEL
+        )
+
+        optimize_latency = (
+            options.get(CONF_OPTIMIZE_LATENCY)
+            or self.config_entry.options.get(CONF_OPTIMIZE_LATENCY)
+            or DEFAULT_OPTIMIZE_LATENCY
+        )
+
+        api_key = (
+            options.get(CONF_API_KEY)
+            or self.config_entry.options.get(CONF_API_KEY)
+            or self._api_key
+        )
 
         # Convert optimize_latency to an integer
         optimize_latency = int(optimize_latency)
