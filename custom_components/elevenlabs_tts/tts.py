@@ -1,6 +1,7 @@
 import logging
 
 from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType
+from homeassistant.components.tts.models import Voice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
@@ -69,6 +70,10 @@ class ElevenLabsProvider(TextToSpeechEntity):
     ) -> TtsAudioType:
         """Load TTS from the ElevenLabs API."""
         return await self._client.get_tts_audio(message, options)
+
+    def async_get_supported_voices(self, language: str) -> list[Voice] | None:
+        """Return a list of supported voices for a language."""
+        return self._client.voices
 
     @property
     def name(self) -> str:

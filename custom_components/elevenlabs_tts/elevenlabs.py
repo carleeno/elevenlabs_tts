@@ -1,5 +1,6 @@
 import logging
 
+from homeassistant.components.tts.models import Voice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
@@ -87,6 +88,13 @@ class ElevenLabsClient:
         endpoint = "voices"
         voices = await self.get(endpoint)
         self._voices = voices.get("voices", [])
+
+        self.voices = []
+
+        for voice in self._voices:
+            new_voice = Voice(voice_id=voice["voice_id"], name=voice["name"])
+            self.voices.append(new_voice)
+
         return self._voices
 
     async def get_voice_by_name(self, name: str) -> dict:
