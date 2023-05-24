@@ -77,7 +77,11 @@ class ElevenLabsClient:
         json_str = orjson.dumps(data)
 
         response = await self.session.post(
-            url, headers=headers, data=json_str, params=params
+            url,
+            headers=headers,
+            data=json_str,
+            params=params,
+            timeout=httpx.Timeout(60),
         )
         response.raise_for_status()
         return response
