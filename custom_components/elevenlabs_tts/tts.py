@@ -2,6 +2,7 @@ import logging
 
 from homeassistant.components.tts import (
     ATTR_AUDIO_OUTPUT,
+    ATTR_VOICE,
     TextToSpeechEntity,
     TtsAudioType,
     Voice,
@@ -16,7 +17,6 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
-    CONF_VOICE,
     DOMAIN,
 )
 from .elevenlabs import ElevenLabsClient
@@ -68,7 +68,7 @@ class ElevenLabsProvider(TextToSpeechEntity):
     def supported_options(self) -> list[str]:
         """Return list of supported options."""
         return [
-            CONF_VOICE,
+            ATTR_VOICE,
             CONF_STABILITY,
             CONF_SIMILARITY,
             CONF_MODEL,

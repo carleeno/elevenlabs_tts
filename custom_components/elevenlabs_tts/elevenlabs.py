@@ -1,6 +1,6 @@
 import logging
 
-from homeassistant.components.tts import ATTR_AUDIO_OUTPUT, Voice
+from homeassistant.components.tts import ATTR_AUDIO_OUTPUT, ATTR_VOICE, Voice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
@@ -13,7 +13,6 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
-    CONF_VOICE,
     DEFAULT_MODEL,
     DEFAULT_OPTIMIZE_LATENCY,
     DEFAULT_SIMILARITY,
@@ -149,8 +148,8 @@ class ElevenLabsClient:
 
         # Get the voice from options, or fall back to the configured default voice
         voice_opt = (
-            options.get(CONF_VOICE)
-            or self.config_entry.options.get(CONF_VOICE)
+            options.get(ATTR_VOICE)
+            or self.config_entry.options.get(ATTR_VOICE)
             or DEFAULT_VOICE
         )
 
