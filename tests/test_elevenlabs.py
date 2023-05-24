@@ -1,5 +1,6 @@
 from unittest.mock import Mock
 
+from homeassistant.components.tts import ATTR_VOICE
 from homeassistant.const import CONF_API_KEY
 import orjson
 import pytest
@@ -11,7 +12,6 @@ from custom_components.elevenlabs_tts.const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
-    CONF_VOICE,
 )
 from custom_components.elevenlabs_tts.elevenlabs import ElevenLabsClient
 
@@ -28,7 +28,7 @@ async def client(hass):
         domain="your_component_domain",
         data={CONF_API_KEY: "test_api_key"},
         options={
-            CONF_VOICE: "test_voice",
+            ATTR_VOICE: "test_voice",
             CONF_STABILITY: 0.5,
             CONF_SIMILARITY: 0.7,
             CONF_MODEL: "custom_model",
@@ -207,7 +207,7 @@ async def test_get_voices(client):
 
 
 @pytest.mark.asyncio
-async def test_get_voice_by_name(client):
+async def test_get_voice_by_name_or_id(client):
     # Set up mock data and voice name
     voices = [
         {"voice_id": "1", "name": "Voice1"},
@@ -218,7 +218,7 @@ async def test_get_voice_by_name(client):
     voice_name = "Voice2"
 
     # Call the method being tested
-    voice = await client.get_voice_by_name(voice_name)
+    voice = await client.get_voice_by_name_or_id(voice_name)
 
     # Assert that the returned voice matches the expected voice
     assert voice == {"voice_id": "2", "name": "Voice2"}
@@ -236,7 +236,7 @@ async def test_get_voice_by_name_not_found(client):
     voice_name = "Voice4"  # Voice name not present in the mocked voices
 
     # Call the method being tested
-    voice = await client.get_voice_by_name(voice_name)
+    voice = await client.get_voice_by_name_or_id(voice_name)
 
     # Assert that the returned voice is an empty dictionary
     assert voice == {}
@@ -319,7 +319,7 @@ async def test_get_tts_options_with_valid_voice_name(client):
         )
 
         options = {
-            CONF_VOICE: "Rachel",
+            ATTR_VOICE: "Rachel",
             CONF_STABILITY: 0.5,
             CONF_SIMILARITY: 0.7,
             CONF_MODEL: "custom_model",
@@ -366,7 +366,7 @@ async def test_get_tts_options_with_valid_voice_name_not_found(client):
         )
 
         options = {
-            CONF_VOICE: "Unknown",
+            ATTR_VOICE: "Unknown",
             CONF_STABILITY: 0.5,
             CONF_SIMILARITY: 0.7,
             CONF_MODEL: "custom_model",
@@ -418,7 +418,7 @@ async def test_get_tts_options_with_valid_voice_name_refresh(client):
         )
 
         options = {
-            CONF_VOICE: "Rachel",
+            ATTR_VOICE: "Rachel",
             CONF_STABILITY: 0.5,
             CONF_SIMILARITY: 0.7,
             CONF_MODEL: "custom_model",

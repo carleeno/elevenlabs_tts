@@ -1,4 +1,5 @@
 from homeassistant import config_entries, exceptions
+from homeassistant.components.tts import ATTR_VOICE
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
@@ -10,7 +11,6 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
-    CONF_VOICE,
     DEFAULT_MODEL,
     DEFAULT_OPTIMIZE_LATENCY,
     DEFAULT_SIMILARITY,
@@ -93,9 +93,13 @@ class ElevenlabsTTSOptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema(
                 {
                     vol.Optional(
-                        CONF_VOICE,
+                        CONF_API_KEY,
+                        default=self.config_entry.data.get(CONF_API_KEY),
+                    ): str,
+                    vol.Optional(
+                        ATTR_VOICE,
                         default=self.config_entry.options.get(
-                            CONF_VOICE, DEFAULT_VOICE
+                            ATTR_VOICE, DEFAULT_VOICE
                         ),
                     ): str,
                     vol.Optional(

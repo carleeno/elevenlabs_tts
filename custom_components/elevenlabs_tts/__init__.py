@@ -29,7 +29,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except Exception as err:
         raise ConfigEntryNotReady from err
 
-    voice = await client.get_voice_by_name(DEFAULT_VOICE)
+    voice = await client.get_voice_by_name_or_id(DEFAULT_VOICE)
     if not voice:
         return False
 

@@ -1,6 +1,12 @@
 import logging
 
-from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType
+from homeassistant.components.tts import (
+    ATTR_AUDIO_OUTPUT,
+    ATTR_VOICE,
+    TextToSpeechEntity,
+    TtsAudioType,
+    Voice,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
@@ -11,7 +17,6 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
-    CONF_VOICE,
     DOMAIN,
 )
 from .elevenlabs import ElevenLabsClient
@@ -40,7 +45,9 @@ class ElevenLabsProvider(TextToSpeechEntity):
         """Initialize the provider."""
         self._client = client
         self._config_entry = config_entry
-        self._name = "ElevenLabsTTS"
+        self._name = "ElevenLabs TTS"
+
+        self._attr_unique_id = f"{config_entry.entry_id}-tts"
 
     @property
     def default_language(self) -> str:
@@ -53,15 +60,21 @@ class ElevenLabsProvider(TextToSpeechEntity):
         return ["en", "de", "pl", "es", "it", "fr", "pt", "hi"]
 
     @property
+    def default_options(self):
+        """Return a dict include default options."""
+        return {ATTR_AUDIO_OUTPUT: "mp3"}
+
+    @property
     def supported_options(self) -> list[str]:
         """Return list of supported options."""
         return [
-            CONF_VOICE,
+            ATTR_VOICE,
             CONF_STABILITY,
             CONF_SIMILARITY,
             CONF_MODEL,
             CONF_OPTIMIZE_LATENCY,
             CONF_API_KEY,
+            ATTR_AUDIO_OUTPUT,
         ]
 
     async def async_get_tts_audio(
@@ -69,6 +82,10 @@ class ElevenLabsProvider(TextToSpeechEntity):
     ) -> TtsAudioType:
         """Load TTS from the ElevenLabs API."""
         return await self._client.get_tts_audio(message, options)
+
+    def async_get_supported_voices(self, language: str) -> list[Voice] | None:
+        """Return a list of supported voices for a language."""
+        return self._client.voices
 
     @property
     def name(self) -> str:

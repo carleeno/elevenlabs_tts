@@ -1,5 +1,6 @@
 import logging
 
+from homeassistant.components.tts import ATTR_AUDIO_OUTPUT, ATTR_VOICE, Voice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
@@ -12,7 +13,6 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
-    CONF_VOICE,
     DEFAULT_MODEL,
     DEFAULT_OPTIMIZE_LATENCY,
     DEFAULT_SIMILARITY,
@@ -87,16 +87,25 @@ class ElevenLabsClient:
         endpoint = "voices"
         voices = await self.get(endpoint)
         self._voices = voices.get("voices", [])
+
+        self.voices = []
+
+        for voice in self._voices:
+            new_voice = Voice(voice_id=voice["voice_id"], name=voice["name"])
+            self.voices.append(new_voice)
+
         return self._voices
 
-    async def get_voice_by_name(self, name: str) -> dict:
-        """Get a voice by its name."""
-        _LOGGER.debug("Looking for voice with name %s", name)
+    async def get_voice_by_name_or_id(self, identifier: str) -> dict:
+        """Get a voice by its name or ID."""
+        _LOGGER.debug("Looking for voice with identifier %s", identifier)
         for voice in self._voices:
-            if voice["name"] == name:
-                _LOGGER.debug("Found voice %s from name %s", voice["voice_id"], name)
+            if voice["name"] == identifier or voice["voice_id"] == identifier:
+                _LOGGER.debug(
+                    "Found voice %s from identifier %s", voice["voice_id"], identifier
+                )
                 return voice
-        _LOGGER.warning("Could not find voice with name %s", name)
+        _LOGGER.warning("Could not find voice with identifier %s", identifier)
         return {}
 
     async def get_tts_audio(
@@ -134,45 +143,61 @@ class ElevenLabsClient:
         if not options:
             options = {}
 
+        if options.get(ATTR_AUDIO_OUTPUT, "mp3") != "mp3":
+            raise ValueError("Only MP3 output is supported.")
+
         # Get the voice from options, or fall back to the configured default voice
-        voice = options.get(
-            CONF_VOICE, self.config_entry.options.get(CONF_VOICE, DEFAULT_VOICE)
+        voice_opt = (
+            options.get(ATTR_VOICE)
+            or self.config_entry.options.get(ATTR_VOICE)
+            or DEFAULT_VOICE
         )
 
         # Get the stability, similarity, model, and optimize latency from options,
         # or fall back to the configured default values
-        stability = options.get(
-            CONF_STABILITY,
-            self.config_entry.options.get(CONF_STABILITY, DEFAULT_STABILITY),
-        )
-        similarity = options.get(
-            CONF_SIMILARITY,
-            self.config_entry.options.get(CONF_SIMILARITY, DEFAULT_SIMILARITY),
-        )
-        model = options.get(
-            CONF_MODEL, self.config_entry.options.get(CONF_MODEL, DEFAULT_MODEL)
-        )
-        optimize_latency = options.get(
-            CONF_OPTIMIZE_LATENCY,
-            self.config_entry.options.get(
-                CONF_OPTIMIZE_LATENCY, DEFAULT_OPTIMIZE_LATENCY
-            ),
+        stability = (
+            options.get(CONF_STABILITY)
+            or self.config_entry.options.get(CONF_STABILITY)
+            or DEFAULT_STABILITY
         )
 
-        api_key = options.get(CONF_API_KEY)
+        similarity = (
+            options.get(CONF_SIMILARITY)
+            or self.config_entry.options.get(CONF_SIMILARITY)
+            or DEFAULT_SIMILARITY
+        )
+
+        model = (
+            options.get(CONF_MODEL)
+            or self.config_entry.options.get(CONF_MODEL)
+            or DEFAULT_MODEL
+        )
+
+        optimize_latency = (
+            options.get(CONF_OPTIMIZE_LATENCY)
+            or self.config_entry.options.get(CONF_OPTIMIZE_LATENCY)
+            or DEFAULT_OPTIMIZE_LATENCY
+        )
+
+        api_key = (
+            options.get(CONF_API_KEY)
+            or self.config_entry.options.get(CONF_API_KEY)
+            or self._api_key
+        )
 
         # Convert optimize_latency to an integer
         optimize_latency = int(optimize_latency)
 
         # Get the voice ID by name from the TTS service
-        voice = await self.get_voice_by_name(voice)
+
+        voice = await self.get_voice_by_name_or_id(voice_opt)
         voice_id = voice.get("voice_id", None)
 
         # If voice_id is not found, refresh the list of voices and try again
         if not voice_id:
             _LOGGER.debug("Could not find voice, refreshing voices")
             await self.get_voices()
-            voice = await self.get_voice_by_name(voice)
+            voice = await self.get_voice_by_name_or_id(voice_opt)
             voice_id = voice.get("voice_id", None)
 
             # If voice_id is still not found, log a warning
