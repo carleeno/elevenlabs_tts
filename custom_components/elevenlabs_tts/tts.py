@@ -57,7 +57,7 @@ class ElevenLabsProvider(TextToSpeechEntity):
     @property
     def supported_languages(self) -> list[str]:
         """Return list of supported languages."""
-        return ["en"]
+        return ["en", "de", "pl", "es", "it", "fr", "pt", "hi"]
 
     @property
     def default_options(self):
