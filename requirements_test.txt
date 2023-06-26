@@ -1,7 +1,7 @@
 -r requirements.txt
 pytest
 pytest-cov
-pytest-homeassistant-custom-component==0.13.37
+pytest-homeassistant-custom-component==0.13.39
 pre-commit>=2.11.1
 respx
 
