@@ -21,3 +21,7 @@ CONF_MODEL = "model"
 DEFAULT_MODEL = "eleven_multilingual_v1"
 CONF_OPTIMIZE_LATENCY = "optimize_streaming_latency"
 DEFAULT_OPTIMIZE_LATENCY = 0
+CONF_STYLE = "style"
+DEFAULT_STYLE = 0.2
+CONF_USE_SPEAKER_BOOST = "use_speaker_boost"
+DEFAULT_USE_SPEAKER_BOOST = True
