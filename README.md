@@ -52,7 +52,9 @@ data:
     voice: Bella
     stability: 1
     similarity: 1
-    model: eleven_multilingual_v1
+    style: 0.3
+    use_speaker_boost: "true"
+    model: eleven_multilingual_v2
     optimize_streaming_latency: 3
 target:
   entity_id: tts.elevenlabstts
