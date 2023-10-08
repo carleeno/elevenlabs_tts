@@ -17,7 +17,9 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
-    DOMAIN,
+    CONF_STYLE,
+    CONF_USE_SPEAKER_BOOST,
+    DOMAIN
 )
 from .elevenlabs import ElevenLabsClient
 
@@ -71,6 +73,8 @@ class ElevenLabsProvider(TextToSpeechEntity):
             ATTR_VOICE,
             CONF_STABILITY,
             CONF_SIMILARITY,
+            CONF_STYLE,
+            CONF_USE_SPEAKER_BOOST,            
             CONF_MODEL,
             CONF_OPTIMIZE_LATENCY,
             CONF_API_KEY,
