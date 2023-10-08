@@ -13,11 +13,15 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
+    CONF_STYLE,
+    CONF_USE_SPEAKER_BOOST,
     DEFAULT_MODEL,
     DEFAULT_OPTIMIZE_LATENCY,
     DEFAULT_SIMILARITY,
     DEFAULT_STABILITY,
     DEFAULT_VOICE,
+    DEFAULT_STYLE,
+    DEFAULT_USE_SPEAKER_BOOST,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -123,13 +127,20 @@ class ElevenLabsClient:
             model,
             optimize_latency,
             api_key,
+            style,
+            use_speaker_boost,
         ) = await self.get_tts_options(options)
 
         endpoint = f"text-to-speech/{voice_id}"
         data = {
             "text": message,
             "model_id": model,
-            "voice_settings": {"stability": stability, "similarity_boost": similarity},
+            "voice_settings": {
+                "stability": stability,
+                "similarity_boost": similarity,
+                "style": style,
+                "use_speaker_boost": use_speaker_boost,
+            },
         }
         params = {"optimize_streaming_latency": optimize_latency}
         _LOGGER.debug("Requesting TTS from %s", endpoint)
@@ -188,7 +199,19 @@ class ElevenLabsClient:
             or self.config_entry.options.get(CONF_API_KEY)
             or self._api_key
         )
-
+        
+        style = (
+            options.get(CONF_STYLE)
+            or self.config_entry.options.get(CONF_STYLE)
+            or DEFAULT_STYLE
+        )
+        
+        use_speaker_boost = (
+            options.get(CONF_USE_SPEAKER_BOOST)
+            or self.config_entry.options.get(CONF_USE_SPEAKER_BOOST)
+            or DEFAULT_USE_SPEAKER_BOOST
+        )
+        
         # Convert optimize_latency to an integer
         optimize_latency = int(optimize_latency)
 
@@ -214,4 +237,4 @@ class ElevenLabsClient:
                 )
                 voice_id = self._voices[0]["voice_id"]
 
-        return voice_id, stability, similarity, model, optimize_latency, api_key
+        return voice_id, stability, similarity, model, optimize_latency, api_key, style, use_speaker_boost,
