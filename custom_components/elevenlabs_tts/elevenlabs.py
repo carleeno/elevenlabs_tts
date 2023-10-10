@@ -138,10 +138,11 @@ class ElevenLabsClient:
             "voice_settings": {
                 "stability": stability,
                 "similarity_boost": similarity,
-                "style": style,
-                "use_speaker_boost": use_speaker_boost,
             },
         }
+        if model == 'eleven_multilingual_v2':
+            data["voice_settings"]["style"] = style
+            data["voice_settings"]["use_speaker_boost"] = use_speaker_boost
         params = {"optimize_streaming_latency": optimize_latency}
         _LOGGER.debug("Requesting TTS from %s", endpoint)
         _LOGGER.debug("Request data: %s", data)
