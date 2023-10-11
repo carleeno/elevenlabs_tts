@@ -13,10 +13,14 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
+    CONF_STYLE,
+    CONF_USE_SPEAKER_BOOST,
     DEFAULT_MODEL,
     DEFAULT_OPTIMIZE_LATENCY,
     DEFAULT_SIMILARITY,
     DEFAULT_STABILITY,
+    DEFAULT_STYLE,
+    DEFAULT_USE_SPEAKER_BOOST,
     DEFAULT_VOICE,
 )
 
@@ -116,21 +120,26 @@ class ElevenLabsClient:
         self, message: str, options: dict | None = None
     ) -> tuple[str, bytes]:
         """Get text-to-speech audio for the given message."""
-        (
-            voice_id,
-            stability,
-            similarity,
-            model,
-            optimize_latency,
-            api_key,
-        ) = await self.get_tts_options(options)
+        tts_options = await self.get_tts_options(options)
+        voice_id, stability, similarity, model, optimize_latency, api_key = tts_options[
+            :6
+        ]
 
         endpoint = f"text-to-speech/{voice_id}"
         data = {
             "text": message,
             "model_id": model,
-            "voice_settings": {"stability": stability, "similarity_boost": similarity},
+            "voice_settings": {
+                "stability": stability,
+                "similarity_boost": similarity,
+            },
         }
+
+        if model == "eleven_multilingual_v2":
+            style, use_speaker_boost = tts_options[6:]
+            data["voice_settings"]["style"] = style
+            data["voice_settings"]["use_speaker_boost"] = use_speaker_boost
+
         params = {"optimize_streaming_latency": optimize_latency}
         _LOGGER.debug("Requesting TTS from %s", endpoint)
         _LOGGER.debug("Request data: %s", data)
@@ -141,7 +150,7 @@ class ElevenLabsClient:
 
     async def get_tts_options(
         self, options: dict
-    ) -> tuple[str, float, float, str, int, str]:
+    ) -> tuple[str, float, float, str, int, str, float, bool]:
         """Get the text-to-speech options for generating TTS audio."""
         # If options is None, assign an empty dictionary to options
         if not options:
@@ -214,4 +223,34 @@ class ElevenLabsClient:
                 )
                 voice_id = self._voices[0]["voice_id"]
 
-        return voice_id, stability, similarity, model, optimize_latency, api_key
+        if model == "eleven_multilingual_v2":
+            style = (
+                options.get(CONF_STYLE)
+                or self.config_entry.options.get(CONF_STYLE)
+                or DEFAULT_STYLE
+            )
+            use_speaker_boost = (
+                options.get(CONF_USE_SPEAKER_BOOST)
+                or self.config_entry.options.get(CONF_USE_SPEAKER_BOOST)
+                or DEFAULT_USE_SPEAKER_BOOST
+            )
+            return (
+                voice_id,
+                stability,
+                similarity,
+                model,
+                optimize_latency,
+                api_key,
+                style,
+                use_speaker_boost,
+            )
+
+        return (
+            voice_id,
+            stability,
+            similarity,
+            model,
+            optimize_latency,
+            api_key,
+        )
+

@@ -28,7 +28,9 @@
                     "stability": "Set the stability of the speech synthesis",
                     "similarity": "Set the clarity/similarity boost of the speech synthesis",
                     "model": "Change the model used for requests",
-                    "optimize_streaming_latency": "Reduce latency at the cost of quality"
+                    "optimize_streaming_latency": "Reduce latency at the cost of quality",	
+                    "style": "Style Exaggeration(Not supported in Model V1)",
+                    "use_speaker_boost": "Enable or disable speaker boost(Not supported in Model V1)"					
                 }
             }
         }

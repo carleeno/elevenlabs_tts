@@ -11,11 +11,15 @@ from .const import (
     CONF_OPTIMIZE_LATENCY,
     CONF_SIMILARITY,
     CONF_STABILITY,
+    CONF_STYLE,
+    CONF_USE_SPEAKER_BOOST,
     DEFAULT_MODEL,
     DEFAULT_OPTIMIZE_LATENCY,
     DEFAULT_SIMILARITY,
     DEFAULT_STABILITY,
     DEFAULT_VOICE,
+    DEFAULT_STYLE,
+    DEFAULT_USE_SPEAKER_BOOST,    
     DOMAIN,
 )
 from .elevenlabs import ElevenLabsClient
@@ -126,6 +130,18 @@ class ElevenlabsTTSOptionsFlowHandler(config_entries.OptionsFlow):
                             CONF_OPTIMIZE_LATENCY, DEFAULT_OPTIMIZE_LATENCY
                         ),
                     ): int,
+                    vol.Optional(
+                        CONF_STYLE,
+                        default=self.config_entry.options.get(
+                            CONF_STYLE, DEFAULT_STYLE
+                        ),
+                    ): float,
+                    vol.Optional(
+                        CONF_USE_SPEAKER_BOOST,
+                        default=self.config_entry.options.get(
+                            CONF_USE_SPEAKER_BOOST, DEFAULT_USE_SPEAKER_BOOST
+                        ),
+                    ): bool,                   
                 }
             ),
         )

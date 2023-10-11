@@ -52,6 +52,8 @@ data:
     voice: Bella
     stability: 1
     similarity: 1
+    style: 0.3 #Not supported in Model V1
+    use_speaker_boost: "true" #Not supported in Model V1
     model: eleven_multilingual_v1
     optimize_streaming_latency: 3
 target:
