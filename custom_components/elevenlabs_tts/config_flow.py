@@ -111,13 +111,19 @@ class ElevenlabsTTSOptionsFlowHandler(config_entries.OptionsFlow):
                         default=self.config_entry.options.get(
                             CONF_STABILITY, DEFAULT_STABILITY
                         ),
-                    ): float,
+                    ): vol.All(
+                        vol.Coerce(float),
+                        vol.Range(min=0, max=1),
+                    ),
                     vol.Optional(
                         CONF_SIMILARITY,
                         default=self.config_entry.options.get(
                             CONF_SIMILARITY, DEFAULT_SIMILARITY
                         ),
-                    ): float,
+                    ): vol.All(
+                        vol.Coerce(float),
+                        vol.Range(min=0, max=1),
+                    ),
                     vol.Optional(
                         CONF_MODEL,
                         default=self.config_entry.options.get(
@@ -129,13 +135,16 @@ class ElevenlabsTTSOptionsFlowHandler(config_entries.OptionsFlow):
                         default=self.config_entry.options.get(
                             CONF_OPTIMIZE_LATENCY, DEFAULT_OPTIMIZE_LATENCY
                         ),
-                    ): int,
+                    ): vol.All(int, vol.Range(min=0, max=4)),
                     vol.Optional(
                         CONF_STYLE,
                         default=self.config_entry.options.get(
                             CONF_STYLE, DEFAULT_STYLE
                         ),
-                    ): float,
+                    ): vol.All(
+                        vol.Coerce(float),
+                        vol.Range(min=0, max=1),
+                    ),
                     vol.Optional(
                         CONF_USE_SPEAKER_BOOST,
                         default=self.config_entry.options.get(
