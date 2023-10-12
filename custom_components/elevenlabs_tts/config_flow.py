@@ -17,9 +17,9 @@ from .const import (
     DEFAULT_OPTIMIZE_LATENCY,
     DEFAULT_SIMILARITY,
     DEFAULT_STABILITY,
-    DEFAULT_VOICE,
     DEFAULT_STYLE,
-    DEFAULT_USE_SPEAKER_BOOST,    
+    DEFAULT_USE_SPEAKER_BOOST,
+    DEFAULT_VOICE,
     DOMAIN,
 )
 from .elevenlabs import ElevenLabsClient
@@ -141,7 +141,7 @@ class ElevenlabsTTSOptionsFlowHandler(config_entries.OptionsFlow):
                         default=self.config_entry.options.get(
                             CONF_USE_SPEAKER_BOOST, DEFAULT_USE_SPEAKER_BOOST
                         ),
-                    ): bool,                   
+                    ): bool,
                 }
             ),
         )
