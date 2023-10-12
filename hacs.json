@@ -2,7 +2,7 @@
   "name": "ElevenLabs TTS",
   "filename": "elevenlabs_tts.zip",
   "hide_default_branch": true,
-  "homeassistant": "2023.10.1",
+  "homeassistant": "2023.8.1",
   "render_readme": true,
   "zip_release": true
 }
