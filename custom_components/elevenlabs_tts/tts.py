@@ -59,7 +59,37 @@ class ElevenLabsProvider(TextToSpeechEntity):
     @property
     def supported_languages(self) -> list[str]:
         """Return list of supported languages."""
-        return ["en", "de", "pl", "es", "it", "fr", "pt", "hi"]
+        # This is for eleven_multilingual_v2, not all are supported in other models
+        return [
+            "en",  # English
+            "ja",  # Japanese
+            "zh",  # Chinese
+            "de",  # German
+            "hi",  # Hindi
+            "fr",  # French
+            "ko",  # Korean
+            "pt",  # Portuguese
+            "it",  # Italian
+            "es",  # Spanish
+            "id",  # Indonesian
+            "nl",  # Dutch
+            "tr",  # Turkish
+            "fil",  # Filipino
+            "pl",  # Polish
+            "sv",  # Swedish
+            "bg",  # Bulgarian
+            "ro",  # Romanian
+            "ar",  # Arabic
+            "cs",  # Czech
+            "el",  # Greek
+            "fi",  # Finnish
+            "hr",  # Croatian
+            "ms",  # Malay
+            "sk",  # Slovak
+            "da",  # Danish
+            "ta",  # Tamil
+            "uk",  # Ukrainian
+        ]
 
     @property
     def default_options(self):
