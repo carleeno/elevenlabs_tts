@@ -1,4 +1,5 @@
 """Consts module."""
+
 from homeassistant.const import Platform
 
 ################################
