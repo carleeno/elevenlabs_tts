@@ -1,4 +1,5 @@
 """ElevenLabs TTS Custom Integration"""
+
 import logging
 
 from homeassistant.config_entries import ConfigEntry
