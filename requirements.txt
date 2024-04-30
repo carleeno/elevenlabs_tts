@@ -2,5 +2,5 @@ colorlog==6.8.2
 homeassistant>=2023.8.1
 pip>=21.0,<24.1
 ruff==0.4.2
-black==23.11.0
+black==24.4.2
 orjson
