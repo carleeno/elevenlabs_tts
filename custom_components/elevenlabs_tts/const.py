@@ -13,7 +13,7 @@ PLATFORMS = [Platform.TTS]
 DOMAIN = "elevenlabs_tts"
 VERSION = "1.0.0"
 
-DEFAULT_VOICE = "Domi"
+DEFAULT_VOICE = "Laura"
 CONF_STABILITY = "stability"
 DEFAULT_STABILITY = 0.75
 CONF_SIMILARITY = "similarity"
