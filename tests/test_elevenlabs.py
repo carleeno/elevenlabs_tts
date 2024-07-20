@@ -303,7 +303,7 @@ async def test_get_tts_options_with_valid_voice_name(client):
         # Define the example voices
         example_voices = [
             {"voice_id": "21m00Tcm4TlvDq8ikWAM", "name": "Rachel"},
-            {"voice_id": "AZnzlk1XvdvUeBnXmlld", "name": "Domi"},
+            {"voice_id": "AZnzlk1XvdvUeBnXmlld", "name": "Laura"},
             {"voice_id": "EXAVITQu4vr4xnSDxMaL", "name": "Bella"},
             {"voice_id": "ErXwobaYiN019PkySvjV", "name": "Antoni"},
             {"voice_id": "MF3mGyEYCl7XYWbV9V6O", "name": "Elli"},
@@ -350,7 +350,7 @@ async def test_get_tts_options_with_valid_voice_name_not_found(client):
         # Define the example voices
         example_voices = [
             {"voice_id": "21m00Tcm4TlvDq8ikWAM", "name": "Rachel"},
-            {"voice_id": "AZnzlk1XvdvUeBnXmlld", "name": "Domi"},
+            {"voice_id": "AZnzlk1XvdvUeBnXmlld", "name": "Laura"},
             {"voice_id": "EXAVITQu4vr4xnSDxMaL", "name": "Bella"},
             {"voice_id": "ErXwobaYiN019PkySvjV", "name": "Antoni"},
             {"voice_id": "MF3mGyEYCl7XYWbV9V6O", "name": "Elli"},
@@ -398,13 +398,13 @@ async def test_get_tts_options_with_valid_voice_name_refresh(client):
     with respx.mock:
         # Define the example voices
         example_voices_initial = [
-            {"voice_id": "AZnzlk1XvdvUeBnXmlld", "name": "Domi"},
+            {"voice_id": "AZnzlk1XvdvUeBnXmlld", "name": "Laura"},
             {"voice_id": "EXAVITQu4vr4xnSDxMaL", "name": "Bella"},
             {"voice_id": "ErXwobaYiN019PkySvjV", "name": "Antoni"},
         ]
         example_voices_refreshed = [
             {"voice_id": "21m00Tcm4TlvDq8ikWAM", "name": "Rachel"},
-            {"voice_id": "AZnzlk1XvdvUeBnXmlld", "name": "Domi"},
+            {"voice_id": "AZnzlk1XvdvUeBnXmlld", "name": "Laura"},
             {"voice_id": "EXAVITQu4vr4xnSDxMaL", "name": "Bella"},
             {"voice_id": "ErXwobaYiN019PkySvjV", "name": "Antoni"},
         ]
