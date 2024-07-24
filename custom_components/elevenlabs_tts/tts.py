@@ -59,7 +59,7 @@ class ElevenLabsProvider(TextToSpeechEntity):
     @property
     def supported_languages(self) -> list[str]:
         """Return list of supported languages."""
-        # This is for eleven_multilingual_v2, not all are supported in other models
+        # This is for eleven_turbo_v2_5, not all are supported in other models
         return [
             "en",  # English
             "ja",  # Japanese
@@ -89,6 +89,9 @@ class ElevenLabsProvider(TextToSpeechEntity):
             "da",  # Danish
             "ta",  # Tamil
             "uk",  # Ukrainian
+            "vi",  # Vietnamese
+            "hu",  # Hungarian
+            "no",  # Norwegian
         ]
 
     @property

@@ -52,9 +52,9 @@ data:
     voice: Bella
     stability: 1
     similarity: 1
-    style: 0.3 #Not supported in Model V1
-    use_speaker_boost: "true" #Not supported in Model V1
-    model: eleven_multilingual_v1
+    style: 0.3 # Only supported in eleven_multilingual_v2
+    use_speaker_boost: "true" # Only supported in eleven_multilingual_v2
+    model: eleven_multilingual_v2
     optimize_streaming_latency: 3
 target:
   entity_id: tts.elevenlabstts
