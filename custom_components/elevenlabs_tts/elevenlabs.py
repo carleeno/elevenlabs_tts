@@ -22,6 +22,7 @@ from .const import (
     DEFAULT_STYLE,
     DEFAULT_USE_SPEAKER_BOOST,
     DEFAULT_VOICE,
+    LEGACY_VOICE_SUFFIX,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -92,20 +93,26 @@ class ElevenLabsClient:
 
     async def get_voices(self) -> dict:
         """Get voices from the API."""
-        endpoint = "voices"
+        endpoint = "voices?show_legacy=true"
         voices = await self.get(endpoint)
         self._voices = voices.get("voices", [])
 
         self.voices = []
 
         for voice in self._voices:
-            new_voice = Voice(voice_id=voice["voice_id"], name=voice["name"])
+            if voice.get("is_legacy"):
+                name = voice["name"] + LEGACY_VOICE_SUFFIX
+            else:
+                name = voice["name"]
+            new_voice = Voice(voice_id=voice["voice_id"], name=name)
             self.voices.append(new_voice)
 
         return self._voices
 
     async def get_voice_by_name_or_id(self, identifier: str) -> dict:
         """Get a voice by its name or ID."""
+        # Remove potential legacy suffix from identifier
+        identifier = identifier.replace(LEGACY_VOICE_SUFFIX, "")
         _LOGGER.debug("Looking for voice with identifier %s", identifier)
         for voice in self._voices:
             if voice["name"] == identifier or voice["voice_id"] == identifier:

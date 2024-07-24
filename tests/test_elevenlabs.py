@@ -199,7 +199,10 @@ async def test_get_voices(client):
         assert voices == mock_response["voices"]
 
         # Assert that the request was made with the correct URL and headers
-        assert respx.calls[0].request.url == "https://api.elevenlabs.io/v1/voices"
+        assert (
+            respx.calls[0].request.url
+            == "https://api.elevenlabs.io/v1/voices?show_legacy=true"
+        )
         assert respx.calls[0].request.headers["xi-api-key"] == client._api_key
 
         # Assert that the client's _voices attribute is updated correctly
