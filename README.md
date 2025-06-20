@@ -1,3 +1,9 @@
+# DEPRECATED
+
+### Please use the official integration [here](https://www.home-assistant.io/integrations/elevenlabs)
+
+Thanks for all the love and support this got early on, I wasn't able to maintain it after 2024 so I'm very happy to see @sorgfresser pick up the torch and do the work to get it directly into HA.
+
 # ElevenLabs TTS for Home Assistant
 
 This integration allows you to use ElevenLabs API as a text-to-speech provider for Home Assistant.
